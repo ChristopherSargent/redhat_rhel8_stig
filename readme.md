@@ -20,6 +20,11 @@
 
       - role: "{{ playbook_dir }}"
 ```
+# Ensure selinux is enforcing 
+10. cp /etc/selinux/config /etc/selinux/config.ORIG
+11. sed -i -e 's|SELINUX=disabled|SELINUX=enforcing|g' /etc/selinux/config
+12. rebbot
+
 # Update execution envirnoment to get this running
 10. docker exec -it tools_awx_1 bash
 11. su - awx 
