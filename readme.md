@@ -23,13 +23,13 @@
 # Ensure selinux is enforcing 
 10. cp /etc/selinux/config /etc/selinux/config.ORIG
 11. sed -i -e 's|SELINUX=disabled|SELINUX=enforcing|g' /etc/selinux/config
-12. rebbot
+12. reboot
 
 # Update execution envirnoment to get this running
-10. docker exec -it tools_awx_1 bash
-11. su - awx 
-12. podman run -itd quay.io/ansible/awx-ee bash
-13. podman exec -u:0 charming_banach ansible-galaxy collection install community.crypto -p /usr/share/ansible/collections
+13. docker exec -it tools_awx_1 bash
+14. su - awx 
+15. podman run -itd quay.io/ansible/awx-ee bash
+16. podman exec -u:0 charming_banach ansible-galaxy collection install community.crypto -p /usr/share/ansible/collections
 ```
 Starting galaxy collection install process
 Process install dependency map
@@ -38,7 +38,7 @@ Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/c
 Installing 'community.crypto:2.22.1' to '/usr/share/ansible/collections/ansible_collections/community/crypto'
 community.crypto:2.22.1 was installed successfully
 ```
-14. podman exec -u:0 charming_banach ansible-galaxy collection install community.general -p /usr/share/ansible/collections
+17. podman exec -u:0 charming_banach ansible-galaxy collection install community.general -p /usr/share/ansible/collections
 ```
 Starting galaxy collection install process
 Process install dependency map
@@ -47,5 +47,5 @@ Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/c
 Installing 'community.general:9.4.0' to '/usr/share/ansible/collections/ansible_collections/community/general'
 community.general:9.4.0 was installed successfully
 ```
-15. podman commit charming_banach quay.io/ansible/awx-ee:10072024
-16. Add ee to AWX UI
+18. podman commit charming_banach quay.io/ansible/awx-ee:10072024
+19. Add ee to AWX UI
