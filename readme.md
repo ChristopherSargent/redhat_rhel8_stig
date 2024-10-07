@@ -26,10 +26,10 @@
 12. reboot
 
 # Update execution envirnoment to get this running
-13. docker exec -it tools_awx_1 bash
-14. su - awx 
-15. podman run -itd quay.io/ansible/awx-ee bash
-16. podman exec -u:0 charming_banach ansible-galaxy collection install community.crypto -p /usr/share/ansible/collections
+10. docker exec -it tools_awx_1 bash
+11. su - awx 
+12. podman run -itd quay.io/ansible/awx-ee bash
+13. podman exec -u:0 charming_banach ansible-galaxy collection install community.crypto -p /usr/share/ansible/collections
 ```
 Starting galaxy collection install process
 Process install dependency map
@@ -38,7 +38,7 @@ Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/c
 Installing 'community.crypto:2.22.1' to '/usr/share/ansible/collections/ansible_collections/community/crypto'
 community.crypto:2.22.1 was installed successfully
 ```
-17. podman exec -u:0 charming_banach ansible-galaxy collection install community.general -p /usr/share/ansible/collections
+14. podman exec -u:0 charming_banach ansible-galaxy collection install community.general -p /usr/share/ansible/collections
 ```
 Starting galaxy collection install process
 Process install dependency map
@@ -47,5 +47,14 @@ Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/c
 Installing 'community.general:9.4.0' to '/usr/share/ansible/collections/ansible_collections/community/general'
 community.general:9.4.0 was installed successfully
 ```
-18. podman commit charming_banach quay.io/ansible/awx-ee:10072024
-19. Add ee to AWX UI
+15. podman commit charming_banach quay.io/ansible/awx-ee:10072024
+16. Add ee to AWX UI
+
+# Oscap 
+1. rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+2. dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+3. dnf install -y scap-security-guide yum-utils ansible
+4. mkdir -p /home/cas/oscap
+5. cd /home/cas/oscap && oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig --results-arf /tmp/arf.xml --report /home/cas/oscap/rhel8test.cas.local.post.report.html --fetch-remote-resources --oval-results /usr/share/xml/scap/ssg/content/ssg-rhel8-ds-1.2.xml
+6. chown -R cas:cas /home/cas
+
