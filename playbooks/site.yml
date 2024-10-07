@@ -4,5 +4,5 @@
   become_user: root
 
   roles:
-
-      - role: "{{ playbook_dir }}"
+    - role: ../roles/redhat_rhel8_stig
+    - role: ../roles/redhat_pamd_fix

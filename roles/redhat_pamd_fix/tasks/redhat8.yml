@@ -1,0 +1,70 @@
+---
+- name: Ensure backup directory exists
+  file:
+    path: "/root/.aap_etc_backup_{{ ansible_date_time.iso8601_basic }}"
+    state: directory
+    mode: 0644
+
+- name: Backup /etc directory
+  copy:
+    src: /etc
+    dest: "/root/.aap_etc_backup_{{ ansible_date_time.iso8601_basic }}"
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: yes
+
+- name: Archive the backup directory
+  command: tar -czvf /root/.aap_etc_backup_{{ ansible_date_time.iso8601_basic }}.tar.gz -C /root .aap_etc_backup_{{ ansible_date_time.iso8601_basic }}
+
+- name: Remove the uncompressed backup directory
+  command: rm -rf /root/.aap_etc_backup_{{ ansible_date_time.iso8601_basic }}
+
+- name: Copy password-auth-ac to /etc/pam.d/password-auth-ac 
+  copy:
+    src: password-auth-ac
+    dest: /etc/pam.d/password-auth-ac
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy system-auth-ac to /etc/pam.d/system-auth-ac
+  copy:
+    src: system-auth-ac
+    dest: /etc/pam.d/system-auth-ac
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy passwd to /etc/pam.d/passwd
+  copy:
+    src: passwd
+    dest: /etc/pam.d/passwd
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy postlogin to /etc/authselect/postlogin
+  copy:
+    src: postlogin
+    dest: /etc/authselect/postlogin
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create symbolic link for /etc/pam.d/password-auth
+  file:
+    src: /etc/pam.d/password-auth-ac
+    dest: /etc/pam.d/password-auth
+    state: link
+    force: yes
+
+- name: Create symbolic link for /etc/pam.d/system-auth
+  file:
+    src: /etc/pam.d/system-auth-ac
+    dest: /etc/pam.d/system-auth
+    state: link
+    force: yes    
+
+- name: Restore SELinux context for /etc/pam.d and /etc/authselect/postlogin
+  command: restorecon -Rv /etc/pam.d /etc/authselect/postlogin
