@@ -5,4 +5,4 @@
 
   roles:
     - role: ../roles/redhat_rhel8_stig
-    - role: ../roles/redhat_pamd_fix
+#    - role: ../roles/redhat_pamd_fix

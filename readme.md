@@ -55,10 +55,14 @@ community.general:9.4.0 was installed successfully
 2. dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 3. dnf install -y scap-security-guide yum-utils ansible
 4. mkdir -p /home/cas/oscap
-5. cd /home/cas/oscap && oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig --results-arf /tmp/arf.xml --report /home/cas/oscap/rhel8test.cas.local.post.report.html --fetch-remote-resources --oval-results /usr/share/xml/scap/ssg/content/ssg-rhel8-ds-1.2.xml
+5. cd /home/cas/oscap && oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig --results-arf /tmp/arf.xml --report /home/cas/oscap/rhel8test.pre.report.html --fetch-remote-resources --oval-results /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+* 49%
 6. chown -R cas:cas /home/cas
-7. oscap xccdf eval --report /home/cas/oscap/report1.html --profile stig /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
-* 90%
+7. awx > run redhat_rhel8_stig template
+8. cd /home/cas/oscap && oscap xccdf eval --profile xccdf_org.ssgproject.content_profile_stig --results-arf /tmp/arf.xml --report /home/cas/oscap/rhel8test.post.report.html --fetch-remote-resources --oval-results /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+* 93%
+9. oscap xccdf eval --report /home/cas/oscap/report1.html --profile stig /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+* 93%
 
 # Generate fix playbook from results
 8. cd /root && mkdir oscap && cd /root/oscap
@@ -66,6 +70,17 @@ community.general:9.4.0 was installed successfully
 10. oscap xccdf generate fix --fetch-remote-resources --fix-type ansible --result-id "" /root/oscap/stig-results.xml > /root/oscap/stig-playbook-fix.yml
 11. ansible-playbook -i localhost, -c local /root/oscap/stig-playbook-fix.yml
 12. oscap xccdf eval --report /home/cas/oscap/report2.html --profile stig /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+# Manual things
+14. systemctl mask --now kdump.service
+15. yum install postfix -y 
+16. cp /etc/ssh/sshd_config /etc/ssh/sshd_config.ORIG
+17. sed -i -e 's|#PermitEmptyPasswords no|PermitEmptyPasswords no|g' /etc/ssh/sshd_config
+18. sed -i -e 's|#PermitUserEnvironment no|PermitUserEnvironment no|g' /etc/ssh/sshd_config
+19. systemctl restart sshd 
+20. cp /etc/selinux/config /etc/selinux/config.ORIG
+21. sed -i -e 's|SELINUX=disabled|SELINUX=enforcing|g' /etc/selinux/config
+22. reboot
 
 # References
 * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/system_design_guide/scanning_the_system_for_security_compliance_and_vulnerabilities#scanning-the-system-with-a-customized-profile-using-scap-workbench_system-design-guide

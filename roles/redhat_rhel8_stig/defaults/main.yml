@@ -560,6 +560,7 @@ rhel8stig_lib_file_perm: 755
 rhel8stig_sudoers_exclude_nopasswd_list:
     - rocky
     - ec2-user
+    - cas
 #    - vagrant
 
 # RHEL-08-010480
@@ -844,10 +845,10 @@ rhel8stig_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | d
 
 # RHEL-08-010680
 # This can be managed using a template ensure settings are correct
-rhel8_stig_use_resolv_template: false
-rhel8_stig_resolv_domain: example.com
+rhel8_stig_use_resolv_template: true
+rhel8_stig_resolv_domain: cas.local
 rhel8_stig_resolv_search:
-#    - 'example.com'
+    - 'cas.local'
 #    - 'blah'
 rhel8_stig_resolv_options:
 #    - 'rotate 2'
