@@ -82,8 +82,94 @@ community.general:9.4.0 was installed successfully
 21. sed -i -e 's|SELINUX=disabled|SELINUX=enforcing|g' /etc/selinux/config
 22. reboot
 
+# Custom ee
+23. docker login https://registry.redhat.io
+24. docker pull registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:1.0.0-812
+25. docker run -itd registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:1.0.0-812 bash
+26. docker exec affectionate_fermat ansible-galaxy collection list
+27. docker exec affectionate_fermat ansible-galaxy collection install community.crypto -p /usr/share/ansible/collections
+28. docker exec affectionate_fermat ansible-galaxy collection install community.general -p /usr/share/ansible/collections
+29. docker exec affectionate_fermat ansible-galaxy collection list
+```
+# /usr/share/ansible/collections/ansible_collections
+Collection                      Version
+------------------------------- -------
+amazon.aws                      7.4.0  
+ansible.controller              4.6.1  
+ansible.eda                     2.1.0  
+ansible.hub                     1.0.0  
+ansible.netcommon               7.1.0  
+ansible.network                 4.0.0  
+ansible.platform                2.5.0  
+ansible.posix                   1.5.4  
+ansible.scm                     3.0.0  
+ansible.security                3.0.0  
+ansible.snmp                    3.0.0  
+ansible.utils                   5.1.0  
+ansible.windows                 1.14.0 
+ansible.yang                    3.0.0  
+arista.eos                      10.0.0 
+cisco.asa                       6.0.0  
+cisco.ios                       9.0.1  
+cisco.iosxr                     10.1.0 
+cisco.nxos                      9.2.1  
+cloud.common                    3.0.0  
+cloud.terraform                 2.0.0  
+community.crypto                2.22.1 
+community.general               9.5.0  
+frr.frr                         2.0.2  
+ibm.qradar                      4.0.0  
+junipernetworks.junos           9.1.0  
+kubernetes.core                 3.0.1  
+microsoft.ad                    1.1.0  
+openvswitch.openvswitch         2.1.1  
+redhat.amq_broker               1.3.0  
+redhat.amq_streams              1.0.0  
+redhat.data_grid                1.3.1  
+redhat.eap                      1.3.1  
+redhat.insights                 1.2.2  
+redhat.jbcs                     1.0.1  
+redhat.jws                      2.0.0  
+redhat.openshift                3.0.1  
+redhat.openshift_virtualization 1.2.3  
+redhat.redhat_csp_download      1.2.2  
+redhat.rhbk                     2.2.2  
+redhat.rhel_idm                 1.10.0 
+redhat.rhel_system_roles        1.21.1 
+redhat.rhv                      2.4.2  
+redhat.runtimes_common          1.1.3  
+redhat.sap_install              1.2.1  
+redhat.satellite                3.10.0 
+redhat.satellite_operations     1.3.0  
+redhat.sso                      1.3.0  
+sap.sap_operations              1.0.4  
+servicenow.itsm                 2.6.3  
+splunk.es                       4.0.0  
+trendmicro.deepsec              4.0.0  
+vmware.vmware                   1.3.0  
+vmware.vmware_rest              3.0.1  
+vyos.vyos                       4.0.2 
+```
+30. docker commit affectionate_fermat registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:10102024
+31. docker save -o ee-supported-rhel8_10102024.tar registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:10102024
+32. cp ee-supported-rhel8-custom_1092024.tar /root/awx-ees/
+33. docker cp ee-supported-rhel8_10102024.tar tools_awx_1:awx_devel
+34. docker exec -it tools_awx_1 bash
+35. su - awx
+36. podman load -i /awx_devel/ee-supported-rhel8_10102024.tar 
+37. podman run -itd registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:10102024 bash
+38. podman exec heuristic_mendel ansible-galaxy collection list
+39. https://swc-awx01.cas.local > Administration > Execution Enviornments > New > Save
+```
+Name  = ee-supported-rhel8-10102024
+Image = registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8:10102024
+Pull  = Always
+```
+
 # References
 * https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/system_design_guide/scanning_the_system_for_security_compliance_and_vulnerabilities#scanning-the-system-with-a-customized-profile-using-scap-workbench_system-design-guide
 * https://redhatgov.io/workshops/rhel_8/exercise1.7/
+* https://access.redhat.com/RegistryAuthentication
+* 
 
 
